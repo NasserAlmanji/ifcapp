@@ -1,0 +1,24 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt --host dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@ericblade/quagga2": "^1.8.4",
+    "@nuxt/ui": "^2.21.0",
+    "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/toast": "^3.3.1",
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "mongoose": "^8.9.6",
+    "nuxt": "^3.15.4",
+    "vue": "latest",
+    "vue-router": "latest"
+  }
+}
