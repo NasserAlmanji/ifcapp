@@ -1,5 +1,5 @@
-import connectDB from "../db";
-import Drone from "../models/Drone.js";
+import connectDB from "../../db";
+import Drone from "../../models/Drone.js";
 
 connectDB();
 

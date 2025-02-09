@@ -1,7 +1,4 @@
-import connectDB from "../db";
 import FormData from "../models/form";
-
-connectDB();
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);

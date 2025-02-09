@@ -1,7 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  modules: ["@nuxt/ui"],
+  runtimeConfig: {
+    MONGODB_URI: process.env.MONGODB_URI,
+    MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
+  },
+  css: ["~/assets/css/global.css"],
+
+  modules: ["@nuxt/ui", "@pinia/nuxt"],
   // devServer: {
   //   https: {
   //     key: "./cert.key",
