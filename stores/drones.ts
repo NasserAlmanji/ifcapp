@@ -9,16 +9,12 @@ export const useDronesStore = defineStore("dronesStore", {
   actions: {
     async fetchDrones() {
       this.loading = true;
+      const { $fetch } = useNuxtApp(); // Get custom $fetch from the plugin
       try {
-        const response = await fetch("/api/drones/all"); // Replace with your API endpoint
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
+        const data = await $fetch("/api/admin/all");
         this.drones = data;
       } catch (error) {
         console.error("Failed to fetch drones:", error);
-        //this.error = error.message;
       } finally {
         this.loading = false;
       }

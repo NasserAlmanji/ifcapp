@@ -31,6 +31,9 @@
 </template>
 
 <script setup>
+definePageMeta({ layout: "default", middleware: ["admin"] });
+const { $fetch } = useNuxtApp(); // Get custom $fetch from the plugin
+
 import { useRoute } from "vue-router";
 import { useDronesStore } from "@/stores/drones";
 
@@ -51,10 +54,12 @@ if (!dronesStore.drones.length) {
 const submitForm = async () => {
   console.log(formData);
   try {
-    await $fetch("/api/drones/assign", {
+    await $fetch("/api/admin/assign", {
       method: "POST",
       body: formData.value,
     });
+    dronesStore.fetchDrones();
+
     navigateTo("/success"); // Redirect to success page
   } catch (error) {
     console.error("Error:", error);

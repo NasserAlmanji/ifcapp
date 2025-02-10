@@ -16,7 +16,7 @@
         <h2 class="text-xl font-bold mb-4">Enter Details</h2>
         <UFormGroup label="Name" name="type" class="mb-4">
           <UInput
-            v-model="formData.type"
+            v-model="form.type"
             placeholder="Enter your name"
             class="bg-gray-700 text-white"
           />
@@ -24,7 +24,7 @@
 
         <UFormGroup label="Barcode" name="barcode1" class="mb-4">
           <UInput
-            v-model="formData.barcode1"
+            v-model="form.barcode1"
             disabled
             class="bg-gray-700 text-white"
           />
@@ -41,6 +41,7 @@
 <script setup>
 import Quagga from "@ericblade/quagga2";
 import { ref, onMounted, onBeforeUnmount } from "vue";
+const { $fetch } = useNuxtApp();
 
 function generateRandomString(length) {
   const characters =
@@ -56,7 +57,7 @@ function generateRandomString(length) {
 }
 
 const step = ref(1); // 1: Scan Barcode, 2: Details Form
-const formData = ref({
+const form = ref({
   type: "Drone",
   barcode1: generateRandomString(10),
 });
@@ -84,7 +85,7 @@ const startScanner = () => {
 
   Quagga.onDetected((result) => {
     const code = result.codeResult.code;
-    formData.value.barcode1 = code; // Save the scanned barcode
+    form.value.barcode1 = code; // Save the scanned barcode
     Quagga.stop(); // Stop the scanner
     step.value = 2; // Move to the details form
   });
@@ -98,10 +99,12 @@ const stopScanner = () => {
 // Submit the form
 const submitForm = async () => {
   try {
-    const response = await $fetch("/api/drones/register", {
+    const response = await $fetch("/api/admin/register", {
       method: "POST",
-      body: formData.value,
+      body: form.value,
     });
+    dronesStore.fetchDrones();
+
     navigateTo("/success"); // Redirect to success page
   } catch (error) {
     console.error("Error:", error);

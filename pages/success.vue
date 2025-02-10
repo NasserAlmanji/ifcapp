@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="min-h-screen bg-gray-900 text-white flex justify-center items-center"
-  >
+  <div class="bg-gray-900 text-white flex justify-center items-center">
     <UCard class="w-full max-w-md bg-gray-800 text-center">
       <h1 class="text-2xl font-bold mb-4">Success!</h1>
       <p class="text-gray-400">Your form has been submitted successfully.</p>
