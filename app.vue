@@ -8,7 +8,13 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { createPinia } from "pinia";
+import piniaPersist from "pinia-plugin-persistedstate";
+
+const pinia = createPinia();
+pinia.use(piniaPersist);
+</script>
 
 <style>
 /* Add global styles if needed */

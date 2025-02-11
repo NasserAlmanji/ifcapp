@@ -12,7 +12,7 @@
           </NuxtLink>
         </div>
 
-        <!-- Right side - User info & actions -->
+        <!-- Right side - User info & actions  -->
         <div
           v-if="authStore.user"
           ref="menuRef"
@@ -22,6 +22,9 @@
             <span class="text-sm text-gray-300 mr-4"
               >Welcome, {{ authStore.user.username }}</span
             >
+            <span class="text-sm text-red-300 mr-4">{{
+              authStore.user.role
+            }}</span>
 
             <!-- User Avatar -->
             <div class="relative">

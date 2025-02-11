@@ -11,6 +11,7 @@ export const useAuthStore = defineStore("auth", {
     token: null as null | string,
     userAvatar: null, // Add this for avatar support
   }),
+  persist: true, // Enables persistence
   actions: {
     setUser(user: {
       username: String;
@@ -19,6 +20,7 @@ export const useAuthStore = defineStore("auth", {
       _id: String;
     }) {
       this.user = user;
+      //localStorage.setItem("user", JSON.stringify(this.user)); // Store token in localStorage
     },
     setToken(token: string) {
       this.token = token;
@@ -28,8 +30,10 @@ export const useAuthStore = defineStore("auth", {
       this.user = null;
       this.token = null;
       localStorage.removeItem("token"); // Remove token from localStorage
+      //localStorage.removeItem("user"); // Remove token from localStorage
     },
     initialize() {
+      console.warn("AuthStore initialize called");
       const token = localStorage.getItem("token");
       if (token) {
         this.token = token;

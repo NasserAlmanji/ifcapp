@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   // },
   css: ["~/assets/css/global.css"],
 
-  modules: ["@nuxt/ui", "@pinia/nuxt"],
+  modules: ["@nuxt/ui", "@pinia/nuxt", "pinia-plugin-persistedstate/nuxt"],
   // devServer: {
   //   https: {
   //     key: "./cert.key",

@@ -35,7 +35,7 @@ definePageMeta({ layout: "default", middleware: ["admin"] });
 const { $fetch } = useNuxtApp(); // Get custom $fetch from the plugin
 
 import { useRoute } from "vue-router";
-import { useDronesStore } from "@/stores/drones";
+//import { useDronesStore } from "@/stores/drones";
 
 const options = ["SharafDJ", "Omantel", "Emax"];
 const route = useRoute();

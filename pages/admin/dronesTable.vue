@@ -21,7 +21,7 @@
 <script setup>
 definePageMeta({ layout: "default", middleware: ["admin"] });
 
-import { useDronesStore } from "@/stores/drones";
+//import { useDronesStore } from "@/stores/drones";
 
 // Define reactive state
 
