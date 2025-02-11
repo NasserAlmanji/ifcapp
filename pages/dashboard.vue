@@ -2,7 +2,10 @@
   <div class="min-h-screen bg-gray-900 text-white">
     <div class="container mx-auto p-6">
       <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        v-if="userStore.user?.role.includes('admin')"
+      >
         <!-- Register New Drone -->
         <NuxtLink
           to="/admin/snbarcode"
@@ -36,20 +39,28 @@
           <h2 class="text-xl font-semibold mb-2">Assign To Seller</h2>
           <p class="text-gray-400">Select Drone to assign</p>
         </NuxtLink>
+      </div>
 
-        <!-- Sleek Form -->
+      <!-- Seller Part -->
+
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        v-if="userStore.user?.role.includes('seller')"
+      >
         <NuxtLink
-          to="/test-form"
+          to="/seller/available"
           class="p-6 bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors relative"
         >
           <div class="absolute top-0 left-0 text-4xl font-bold text-white">
-            3
+            1
           </div>
-
-          <h2 class="text-xl font-semibold mb-2">Sleek Form</h2>
-          <p class="text-gray-400">
-            A modern, dark-themed form for user input.
-          </p>
+          <img
+            src="/images/shipment-image.avif"
+            alt="Distribution"
+            class="w-full h-32 object-cover rounded-md mb-4"
+          />
+          <h2 class="text-xl font-semibold mb-2">See Drones</h2>
+          <p class="text-gray-400">Associate Customer with Drone</p>
         </NuxtLink>
       </div>
     </div>
@@ -57,7 +68,9 @@
 </template>
 
 <script setup>
-definePageMeta({ layout: "default", middleware: ["admin"] });
+definePageMeta({ layout: "auth" });
+
+const userStore = useAuthStore();
 </script>
 
 <style scoped>

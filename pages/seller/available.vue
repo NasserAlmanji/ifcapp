@@ -30,7 +30,7 @@ const pageCount = 10;
 
 const dronesStore = useDronesStore();
 if (!dronesStore.drones.length) {
-  dronesStore.fetchDrones();
+  dronesStore.fetchSellerDrones();
 }
 
 const drones = computed(() => {

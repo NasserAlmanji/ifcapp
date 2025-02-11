@@ -43,6 +43,8 @@ import Quagga from "@ericblade/quagga2";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 const { $fetch } = useNuxtApp();
 
+const dronesStore = useDronesStore();
+
 function generateRandomString(length) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

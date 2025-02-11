@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     { expiresIn: "1h" }
   );
 
-  setCookie(event, "auth_token", token);
+  //setCookie(event, "auth_token", token);
   //setCookie("auth_token").value = token; // Save token in a cookie
 
   return { user, token };

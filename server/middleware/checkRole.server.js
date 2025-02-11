@@ -2,10 +2,17 @@ import jwt from "jsonwebtoken";
 import User from "../models/User";
 
 export default defineEventHandler(async (event) => {
-  if (!event.node.req.url?.startsWith("/api/admin")) {
+  if (event.node.req.url?.startsWith("/api/auth")) {
     return;
   }
 
+  if (event.node.req.url?.startsWith("/login")) {
+    return;
+  }
+
+  if (event.node.req.url?.startsWith("/register")) {
+    return;
+  }
   const authorizationHeader = event.node.req.headers["authorization"];
 
   if (!authorizationHeader) {
@@ -15,12 +22,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  console.log("auth token RRR", getCookie(event, "auth_token"));
-
   const token =
-    getCookie(event, "auth_token") || authorizationHeader.split(" ")[1];
-
-  console.log("token QQ", token);
+    /*getCookie(event, "auth_token") ||*/ authorizationHeader.split(" ")[1];
 
   if (!token) {
     throw createError({
@@ -45,13 +48,24 @@ export default defineEventHandler(async (event) => {
     }
 
     // Check if user has 'admin' role
-    if (!user.role.includes("admin")) {
-      throw createError({
-        statusCode: 403,
-        message: "Access denied. Admins only.",
-      });
+
+    if (event.node.req.url?.startsWith("/api/admin")) {
+      if (!user.role.includes("admin")) {
+        throw createError({
+          statusCode: 403,
+          message: "Access denied. Admins only.",
+        });
+      }
     }
 
+    if (event.node.req.url?.startsWith("/api/seller")) {
+      if (!user.role.includes("seller")) {
+        throw createError({
+          statusCode: 403,
+          message: "Access denied. Sellers only.",
+        });
+      }
+    }
     // Attach user to event context for further use
     event.context.user = user;
   } catch (error) {

@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-definePageMeta({ layout: "default", middleware: ["admin"] });
+definePageMeta({ layout: "auth" });
 const { $fetch } = useNuxtApp(); // Get custom $fetch from the plugin
 
 import { useRoute } from "vue-router";

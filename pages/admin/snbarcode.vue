@@ -5,5 +5,5 @@
 </template>
 
 <script>
-definePageMeta({ layout: "default", middleware: ["admin"] });
+definePageMeta({ layout: "auth" });
 </script>

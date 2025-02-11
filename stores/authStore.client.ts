@@ -24,21 +24,13 @@ export const useAuthStore = defineStore("auth", {
     },
     setToken(token: string) {
       this.token = token;
-      localStorage.setItem("token", token); // Store token in localStorage
+      // localStorage.setItem("token", token); // Store token in localStorage
     },
     logout() {
       this.user = null;
       this.token = null;
-      localStorage.removeItem("token"); // Remove token from localStorage
+      //localStorage.removeItem("token"); // Remove token from localStorage
       //localStorage.removeItem("user"); // Remove token from localStorage
-    },
-    initialize() {
-      console.warn("AuthStore initialize called");
-      const token = localStorage.getItem("token");
-      if (token) {
-        this.token = token;
-        // Optionally, fetch user data from the backend
-      }
     },
   },
 });
