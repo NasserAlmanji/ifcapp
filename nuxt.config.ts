@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   //   },
   //   host: "0.0.0.0", // This allows external access
   // },
-  // routeRules: {
-  //   "/": { redirect: "/dashboard" },
-  // },
+  routeRules: {
+    "/": { redirect: "/dashboard" },
+  },
 });

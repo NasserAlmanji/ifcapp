@@ -32,7 +32,6 @@
 
 <script setup>
 definePageMeta({ layout: "auth" });
-const { $fetch } = useNuxtApp(); // Get custom $fetch from the plugin
 
 import { useRoute } from "vue-router";
 //import { useDronesStore } from "@/stores/drones";

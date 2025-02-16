@@ -7,6 +7,4 @@
   </div>
 </template>
 
-<script setup>
-definePageMeta({ middleware: ["checkLogin"] });
-</script>
+<script setup></script>

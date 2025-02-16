@@ -9,7 +9,6 @@ export const useDronesStore = defineStore("dronesStore", {
   actions: {
     async fetchDrones() {
       this.loading = true;
-      const { $fetch } = useNuxtApp(); // Get custom $fetch from the plugin
       try {
         const data = await $fetch("/api/admin/all");
         this.drones = data;
@@ -21,7 +20,6 @@ export const useDronesStore = defineStore("dronesStore", {
     },
     async fetchSellerDrones() {
       this.loading = true;
-      const { $fetch } = useNuxtApp(); // Get custom $fetch from the plugin
       try {
         const data = await $fetch("/api/seller/available");
         this.drones = data;

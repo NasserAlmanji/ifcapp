@@ -20,17 +20,15 @@ export const useAuthStore = defineStore("auth", {
       _id: String;
     }) {
       this.user = user;
-      //localStorage.setItem("user", JSON.stringify(this.user)); // Store token in localStorage
     },
     setToken(token: string) {
       this.token = token;
-      // localStorage.setItem("token", token); // Store token in localStorage
     },
     logout() {
       this.user = null;
       this.token = null;
-      //localStorage.removeItem("token"); // Remove token from localStorage
-      //localStorage.removeItem("user"); // Remove token from localStorage
+      const token = useCookie("auth_token"); // Access the cookie
+      token.value = null; // Set the cookie to null (delete it)
     },
   },
 });

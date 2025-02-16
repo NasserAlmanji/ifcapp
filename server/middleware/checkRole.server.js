@@ -13,30 +13,31 @@ export default defineEventHandler(async (event) => {
   if (event.node.req.url?.startsWith("/register")) {
     return;
   }
-  const authorizationHeader = event.node.req.headers["authorization"];
+  //const authorizationHeader = event.node.req.headers["authorization"];
 
-  if (!authorizationHeader) {
-    throw createError({
-      statusCode: 401,
-      message: "Authorization header missing",
-    });
-  }
+  // if (!authorizationHeader) {
+  //   throw createError({
+  //     statusCode: 401,
+  //     message: "Authorization header missing",
+  //   });
+  // }
 
-  const token =
-    /*getCookie(event, "auth_token") ||*/ authorizationHeader.split(" ")[1];
+  const token = getCookie(event, "auth_token"); // || authorizationHeader?.split(" ")[1];
 
   if (!token) {
-    throw createError({
-      statusCode: 401,
-      message: "Token missing in Authorization header",
-    });
+    return sendRedirect(event, "/login", 302);
+
+    // throw createError({
+    //   statusCode: 401,
+    //   message: "Token missing in Authorization header",
+    // });
   }
 
   try {
     // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "123456789");
 
-    console.log("decoded", decoded);
+    console.log("user is: \n", decoded);
 
     // Fetch user based on the decoded ID
     const user = await User.findById(decoded.id);

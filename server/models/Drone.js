@@ -5,7 +5,7 @@ import User from "./User";
 const droneSchema = new mongoose.Schema(
   {
     type: { type: String, required: true },
-    barcode1: { type: String, required: true },
+    barcode1: { type: String, required: true, unique: true },
     barcode2: { type: String },
     barcode3: { type: String },
     registrar: { type: Schema.Types.ObjectId, ref: "User" },
