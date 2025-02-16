@@ -71,6 +71,8 @@ export default defineEventHandler(async (event) => {
     event.context.user = user;
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
+      return sendRedirect(event, "/login", 302);
+
       throw createError({
         statusCode: 400,
         message: "Invalid token.",

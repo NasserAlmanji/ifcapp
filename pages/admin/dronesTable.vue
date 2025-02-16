@@ -78,6 +78,10 @@ const columns = [
     key: "seller",
     label: "Distributor",
   },
+  {
+    key: "registrar.username",
+    label: "Registrar",
+  },
 ];
 
 // You can add any logic or data fetching here if needed

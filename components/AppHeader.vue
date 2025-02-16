@@ -1,16 +1,22 @@
 <template>
   <header class="bg-gray-800 shadow-lg">
     <div class="container mx-auto px-4">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-20">
         <!-- Left side - Logo/Brand -->
         <div class="flex items-center">
           <NuxtLink
             to="/dashboard"
             class="text-xl font-bold text-white hover:text-gray-200 transition-colors"
           >
-            IFC Compliance App
+            <img
+              src="/images/ibnfirnas.png"
+              alt="Logo"
+              class="h-16 rounded-md"
+            />
           </NuxtLink>
         </div>
+
+        <div class="text-xl">IFDC Compliance App</div>
 
         <!-- Right side - User info & actions  -->
         <div

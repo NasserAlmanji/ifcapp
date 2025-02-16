@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
       organization: user.organization,
       id: user.id,
     },
-    process.env.JWT_SECRET || "123456789",
+    process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
 
