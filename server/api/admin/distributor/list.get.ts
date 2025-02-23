@@ -1,9 +1,9 @@
-import Drone from "../../models/Drone.js";
+import Distributor from "../../../models/Distributor.js";
 import { defineEventHandler, readBody, createError } from "h3";
 
 export default defineEventHandler(async (event) => {
   try {
-    return await Drone.find({}).populate("registrar");
+    return await Distributor.find({}).populate("creator");
   } catch (error) {
     console.error("Error saving drone data:", error);
     throw createError({

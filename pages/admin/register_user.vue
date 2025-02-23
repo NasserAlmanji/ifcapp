@@ -1,9 +1,7 @@
 <template>
   <div class="flex justify-center items-center">
     <div class="rounded-lg shadow-lg p-3">
-      <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
-        Register
-      </h1>
+      <h1 class="text-2xl font-bold text-center mb-8">Add User</h1>
 
       <form @submit.prevent="register">
         <div class="mb-6">
@@ -29,16 +27,6 @@
         </div>
 
         <div class="mb-6">
-          <input
-            v-model="form.organization"
-            type="text"
-            id="organization"
-            placeholder="Organization"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div class="mb-6">
           <select
             v-model="form.role"
             id="role"
@@ -47,7 +35,34 @@
           >
             <option value="admin">Admin</option>
             <option value="seller">Seller</option>
+            <option value="government">Governmnet</option>
           </select>
+        </div>
+
+        <div v-if="form.role == 'seller'" class="mb-6">
+          <select
+            v-model="form.organization"
+            required
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option
+              v-for="option in distributors"
+              :key="option.name"
+              :value="option.name"
+            >
+              {{ option.name }}
+            </option>
+          </select>
+        </div>
+
+        <div v-else class="mb-6">
+          <input
+            v-model="form.organization"
+            type="text"
+            id="organization"
+            placeholder="Organization"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </div>
 
         <button
@@ -65,15 +80,23 @@
 </template>
 
 <script setup>
+definePageMeta({ layout: "auth" });
+
 const form = ref({
-  username: "admin",
-  password: "admin",
-  organization: "ifc",
+  username: "",
+  password: "",
+  organization: "",
   role: "admin", // Default role
 });
 
 const message = ref("");
 const error = ref("");
+
+const {
+  data: distributors,
+  status,
+  error: fetchError,
+} = await useFetch("/api/admin/distributor/list");
 
 const register = async () => {
   try {
@@ -81,8 +104,8 @@ const register = async () => {
       method: "POST",
       body: form.value,
     });
-    authStore.setToken(response.token);
-    authStore.setUser(response.user);
+    //authStore.setToken(response.token);
+    //authStore.setUser(response.user);
     message.value = "Registration successful!";
     error.value = "";
     navigateTo("/dashboard");

@@ -5,7 +5,7 @@
       <div class="flex justify-center mb-6">
         <i class="fas fa-user-circle text-4xl text-green-500"></i>
       </div>
-      <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">Login</h1>
+      <h1 class="text-2xl font-bold text-center mb-8">Login</h1>
       <form @submit.prevent="login">
         <div class="mb-6">
           <input

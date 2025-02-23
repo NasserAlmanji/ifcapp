@@ -60,11 +60,28 @@
               >
                 <div class="py-1">
                   <NuxtLink
-                    to="/profile"
+                    v-if="authStore.user.role.includes('admin')"
+                    to="/admin/addDroneType"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    Profile Settings
+                    Add Drone Type
                   </NuxtLink>
+                  <NuxtLink
+                    v-if="authStore.user.role.includes('admin')"
+                    to="/admin/addDistributor"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Add Distributor
+                  </NuxtLink>
+
+                  <NuxtLink
+                    v-if="authStore.user.role.includes('admin')"
+                    to="/admin/register_user"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Add User
+                  </NuxtLink>
+
                   <button
                     @click="handleLogout"
                     class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

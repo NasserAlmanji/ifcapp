@@ -21,8 +21,6 @@
 <script setup>
 definePageMeta({ layout: "auth" });
 
-//import { useDronesStore } from "@/stores/drones";
-
 // Define reactive state
 
 const page = ref(1);
@@ -46,13 +44,13 @@ const error = computed(() => {
 });
 
 // Handle row click
-const select = (row) => {
-  let id = { ...row }._id;
-  if ({ ...row }.seller) {
-    return alert("already assigned to seller");
-  }
-  navigateTo(`/admin/assign-${id}`);
-};
+// const select = (row) => {
+//   let id = { ...row }._id;
+//   if ({ ...row }.seller) {
+//     return alert("already assigned to seller");
+//   }
+//   navigateTo(`/admin/assign-${id}`);
+// };
 
 const rows = computed(() => {
   return dronesStore.drones.slice(

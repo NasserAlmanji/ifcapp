@@ -1,6 +1,7 @@
 // server/api/auth/login.js
 import User from "../../models/User";
 import jwt from "jsonwebtoken";
+import { defineEventHandler, readBody, createError, setCookie } from "h3";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);

@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Verify the JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "123456789");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     console.log("user is: \n", decoded);
 
