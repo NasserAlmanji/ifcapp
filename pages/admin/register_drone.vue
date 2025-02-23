@@ -8,7 +8,7 @@
       type="text"
       @focus="handleFocus"
       ref="inputRef"
-      placeholder="Flashing cursor must be here while scanning barcode "
+      placeholder="Before scan, place cursor here"
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
 

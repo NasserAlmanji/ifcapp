@@ -1,6 +1,8 @@
 <template>
   <div class="max-w-md mx-auto p-6 text-center font-sans">
-    <h1 class="text-2xl font-bold mb-4">Assign Drones to Seller</h1>
+    <h1 class="text-2xl font-bold mb-4">
+      Scan Drone Barcode To Confirm Drone Reception
+    </h1>
 
     <input
       v-model="scannedItem"
@@ -12,14 +14,8 @@
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
 
-    <USelect
-      v-model="distributor"
-      :options="distributors.map((distributor) => distributor.name)"
-      class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-
     <UButton @click="submit()" color="primary" class="w-full">
-      Assign ( {{ items.length }} ) drones</UButton
+      Confirm ( {{ items.length }} ) drones</UButton
     >
 
     <!-- Display list of items -->
@@ -46,7 +42,7 @@ definePageMeta({ layout: "auth" });
 
 const scannedItem = ref("");
 const items = ref([]);
-const distributor = ref("");
+const type = ref("");
 const inputRef = ref(null);
 let timeout = null;
 
@@ -70,7 +66,7 @@ const onInputChange = () => {
       if (item.length > 10) {
         //alert(item);
         try {
-          await $fetch(`/api/admin/check/isWithSeller?id=${item}`);
+          await $fetch(`/api/seller/check/isConfirmed?id=${item}`);
 
           items.value.push(item);
         } catch (error) {
@@ -82,21 +78,15 @@ const onInputChange = () => {
   }, 100);
 };
 
-const {
-  data: distributors,
-  status,
-  error: fetchError,
-} = await useFetch("/api/admin/distributor/list");
-
 const removeItem = (index) => {
   items.value.splice(index, 1);
   scannedItem.value = "";
 };
 
 async function submit() {
-  const { data, error, pending } = await useFetch("/api/admin/assign_drone", {
+  const { data, error, pending } = await useFetch("/api/seller/confirm_drone", {
     method: "POST",
-    body: { distributor, items: items.value },
+    body: { items: items.value },
     headers: {
       "Content-Type": "application/json",
     },

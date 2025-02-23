@@ -2,8 +2,15 @@
   <div class="min-h-screen bg-gray-900 text-white">
     <div class="container mx-auto p-6">
       <div>
-        <UTable :rows="rows" :columns="columns" @select="select" />
+        <UTable v-model:expand="expand" :columns="columns" :rows="rows">
+          <template #expand="{ row }">
+            <div class="p-4">
+              <pre>{{ row }}</pre>
+            </div>
+          </template>
+        </UTable>
 
+        <!-- <UTable :rows="rows" :columns="columns" @select="select" /> -->
         <div
           class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
         >
@@ -21,17 +28,17 @@
 <script setup>
 definePageMeta({ layout: "auth" });
 
-//import { useDronesStore } from "@/stores/drones";
-
 // Define reactive state
 
 const page = ref(1);
 const pageCount = 10;
-
+const expand = ref({
+  openedRows: [],
+  row: {},
+});
 const dronesStore = useDronesStore();
-if (!dronesStore.drones.length) {
-  dronesStore.fetchSellerDrones();
-}
+
+dronesStore.fetchSellerDrones();
 
 const drones = computed(() => {
   return dronesStore.drones;
@@ -46,13 +53,13 @@ const error = computed(() => {
 });
 
 // Handle row click
-const select = (row) => {
-  let id = { ...row }._id;
-  if ({ ...row }.seller) {
-    return alert("already assigned to seller");
-  }
-  navigateTo(`/admin/assign-${id}`);
-};
+// const select = (row) => {
+//   let id = { ...row }._id;
+//   if ({ ...row }.seller) {
+//     return alert("already assigned to seller");
+//   }
+//   navigateTo(`/admin/assign-${id}`);
+// };
 
 const rows = computed(() => {
   return dronesStore.drones.slice(
@@ -73,6 +80,10 @@ const columns = [
   {
     key: "barcode1",
     label: "Serial Number",
+  },
+  {
+    key: "sellerHasReceived",
+    label: "Confirmed",
   },
   {
     key: "seller",

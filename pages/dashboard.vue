@@ -64,7 +64,7 @@
         v-if="userStore.user?.role.includes('seller')"
       >
         <NuxtLink
-          to="/seller/available"
+          to="/seller/confirm_drone"
           class="p-6 bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors relative"
         >
           <div class="absolute top-0 left-0 text-4xl font-bold text-white">
@@ -72,6 +72,38 @@
           </div>
           <img
             src="/images/shipment-image.avif"
+            alt="Distribution"
+            class="w-full h-32 object-cover rounded-md mb-4"
+          />
+          <h2 class="text-xl font-semibold mb-2">Confirm Drones</h2>
+          <p class="text-gray-400">Confirm shipment has arrived</p>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/seller/sell_drone"
+          class="p-6 bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors relative"
+        >
+          <div class="absolute top-0 left-0 text-4xl font-bold text-white">
+            2
+          </div>
+          <img
+            src="/images/customer.png"
+            alt="Distribution"
+            class="w-full h-32 object-cover rounded-md mb-4"
+          />
+          <h2 class="text-xl font-semibold mb-2">Sell Drone</h2>
+          <p class="text-gray-400">Insert customer data here</p>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/seller/view_seller_drones"
+          class="p-6 bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors relative"
+        >
+          <div class="absolute top-0 left-0 text-4xl font-bold text-white">
+            3
+          </div>
+          <img
+            src="/images/table.png"
             alt="Distribution"
             class="w-full h-32 object-cover rounded-md mb-4"
           />

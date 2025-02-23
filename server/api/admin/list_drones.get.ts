@@ -3,7 +3,12 @@ import { defineEventHandler, readBody, createError } from "h3";
 
 export default defineEventHandler(async (event) => {
   try {
-    return await Drone.find({}).populate("registrar");
+    return await Drone.find({
+      seller: event.context.user?.organization || undefined,
+    })
+      .populate({ path: "registrar", select: "username" })
+      .populate({ path: "assignedBy", select: "username" })
+      .populate({ path: "soldBy", select: "username" });
   } catch (error) {
     console.error("Error saving drone data:", error);
     throw createError({

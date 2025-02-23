@@ -2,8 +2,15 @@
   <div class="min-h-screen bg-gray-900 text-white">
     <div class="container mx-auto p-6">
       <div>
-        <UTable :rows="rows" :columns="columns" @select="select" />
+        <UTable v-model:expand="expand" :columns="columns" :rows="rows">
+          <template #expand="{ row }">
+            <div class="p-4">
+              <pre>{{ row }}</pre>
+            </div>
+          </template>
+        </UTable>
 
+        <!-- <UTable :rows="rows" :columns="columns" @select="select" /> -->
         <div
           class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
         >
@@ -25,7 +32,10 @@ definePageMeta({ layout: "auth" });
 
 const page = ref(1);
 const pageCount = 10;
-
+const expand = ref({
+  openedRows: [],
+  row: {},
+});
 const dronesStore = useDronesStore();
 if (!dronesStore.drones.length) {
   dronesStore.fetchDrones();
@@ -73,12 +83,12 @@ const columns = [
     label: "Serial Number",
   },
   {
-    key: "seller",
-    label: "Distributor",
-  },
-  {
     key: "registrar.username",
     label: "Registrar",
+  },
+  {
+    key: "seller",
+    label: "Distributor",
   },
 ];
 

@@ -14,9 +14,14 @@ const droneSchema = new mongoose.Schema(
     assignedTime: { type: Date },
     assignedBy: { type: Schema.Types.ObjectId, ref: "User" },
     sellerHasReceived: { type: Boolean },
+    hasBeenReceivedBy: { type: Schema.Types.ObjectId, ref: "User" },
     sellerHasReceivedTime: Date,
+    sold: Boolean,
     sellTime: Date,
     soldBy: { type: Schema.Types.ObjectId, ref: "User" },
+    idcardnumber: String,
+    idname: String,
+    idexpirydate: String,
   },
   { timestamps: true }
 );

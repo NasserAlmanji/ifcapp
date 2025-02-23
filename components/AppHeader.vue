@@ -56,7 +56,7 @@
               <!-- Dropdown Menu -->
               <div
                 v-if="isMenuOpen"
-                class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
               >
                 <div class="py-1">
                   <NuxtLink
