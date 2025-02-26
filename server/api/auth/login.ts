@@ -1,9 +1,14 @@
 // server/api/auth/login.js
 import User from "../../models/User";
 import jwt from "jsonwebtoken";
+import connectDB from "../../db"; 
 import { defineEventHandler, readBody, createError, setCookie } from "h3";
+import { useRuntimeConfig } from "#imports";
+
+connectDB();
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
   const body = await readBody(event);
   const { username, password } = body;
 
@@ -27,7 +32,7 @@ export default defineEventHandler(async (event) => {
       organization: user.organization,
       id: user.id,
     },
-    process.env.JWT_SECRET,
+    config.JWT_SECRET,
     { expiresIn: "1h" }
   );
 

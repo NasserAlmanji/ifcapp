@@ -1,5 +1,9 @@
 // server/api/auth/register.js
 import User from "../../models/User";
+import { defineEventHandler, readBody, createError } from "h3";
+import connectDB from "../../db"; 
+
+connectDB();
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);

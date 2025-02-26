@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import { useRuntimeConfig } from "#imports";
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
+
   if (event.node.req.url?.startsWith("/api/auth")) {
     return;
   }
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Verify the JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, config.JWT_SECRET);
 
     console.log("user is: \n", decoded);
 

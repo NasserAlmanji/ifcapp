@@ -1,7 +1,9 @@
 // server/db.js
 import mongoose from "mongoose";
+import { useRuntimeConfig } from "#imports";
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const config = useRuntimeConfig();
+const MONGODB_URI = config.MONGODB_URI;
 
 const connectDB = async () => {
   try {
