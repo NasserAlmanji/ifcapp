@@ -6,18 +6,18 @@ export const useDronesStore = defineStore("dronesStore", {
     loading: false,
     error: null as Error | null,
   }),
-  actions: {
-    async fetchDrones() {
-      const { data, status, error } = await useFetch("/api/admin/list_drones");
-      this.drones = (data.value as []) || [];
-      this.loading = status.value === "pending";
-      this.error = error.value;
-    },
-    async fetchSellerDrones() {
-      const { data, status, error } = await useFetch("/api/seller/list_drones");
-      this.drones = (data.value as []) || [];
-      this.loading = status.value === "pending";
-      this.error = error.value;
-    },
-  },
+  // actions: {
+  //   async fetchDrones() {
+  //     const { data, status, error } = await useFetch("/api/admin/list_drones");
+  //     this.drones = (data.value as []) || [];
+  //     this.loading = status.value === "pending";
+  //     this.error = error.value;
+  //   },
+  //   async fetchSellerDrones() {
+  //     const { data, status, error } = await useFetch("/api/seller/list_drones");
+  //     this.drones = (data.value as []) || [];
+  //     this.loading = status.value === "pending";
+  //     this.error = error.value;
+  //   },
+  // },
 });

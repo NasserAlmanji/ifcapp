@@ -116,6 +116,8 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '../stores/authStore.client';
+
 definePageMeta({ layout: "auth" });
 
 const userStore = useAuthStore();

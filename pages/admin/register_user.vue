@@ -35,7 +35,7 @@
           >
             <option value="admin">Admin</option>
             <option value="seller">Seller</option>
-            <option value="government">Governmnet</option>
+            <option value="government">Government</option>
           </select>
         </div>
 
@@ -47,7 +47,7 @@
           >
             <option
               v-for="option in distributors"
-              :key="option.name"
+              :key="option.id"
               :value="option.name"
             >
               {{ option.name }}
@@ -80,6 +80,9 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
+import api from "@/utils/api";
+
 definePageMeta({ layout: "auth" });
 
 const form = ref({
@@ -91,28 +94,37 @@ const form = ref({
 
 const message = ref("");
 const error = ref("");
+const distributors = ref([]);
 
-const {
-  data: distributors,
-  status,
-  error: fetchError,
-} = await useFetch("/api/admin/distributor/list");
+const fetchDistributors = async () => {
+  try {
+    const response = await api.getDistributors();
+    distributors.value = response.data;
+  } catch (err) {
+    console.error("Error fetching distributors:", err);
+  }
+};
+
+onMounted(() => {
+  fetchDistributors();
+});
 
 const register = async () => {
   try {
-    const response = await $fetch("/api/auth/register", {
-      method: "POST",
-      body: form.value,
+    await api.registerUser({
+      username: form.value.username,
+      password: form.value.password,
+      role: form.value.role,
+      organization: form.value.organization,
     });
-    //authStore.setToken(response.token);
-    //authStore.setUser(response.user);
+
     message.value = "Registration successful!";
     error.value = "";
     navigateTo("/dashboard");
-  } catch (error) {
-    error.value = error.message;
+  } catch (err) {
+    error.value = err.response?.data?.message || "Registration failed";
     message.value = "";
-    console.error("Register failed", error);
+    console.error("Register failed", err);
   }
 };
 </script>

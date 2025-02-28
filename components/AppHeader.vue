@@ -63,6 +63,7 @@
                     v-if="authStore.user.role.includes('admin')"
                     to="/admin/addDroneType"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    @click=closeMenu
                   >
                     Add Drone Type
                   </NuxtLink>
@@ -70,6 +71,7 @@
                     v-if="authStore.user.role.includes('admin')"
                     to="/admin/addDistributor"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    @click=closeMenu
                   >
                     Add Distributor
                   </NuxtLink>
@@ -78,6 +80,7 @@
                     v-if="authStore.user.role.includes('admin')"
                     to="/admin/register_user"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    @click=closeMenu
                   >
                     Add User
                   </NuxtLink>
@@ -111,6 +114,10 @@ onMounted(() => {
     }
   });
 });
+
+const closeMenu = () => {
+  isMenuOpen.value = false;
+};
 
 // Get user initials for avatar fallback
 const getUserInitials = computed(() => {
