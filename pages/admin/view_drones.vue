@@ -1,6 +1,21 @@
 <template>
   <div class="min-h-screen bg-gray-900 text-white">
     <div class="container mx-auto p-6">
+      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <UInput
+          v-model="searchTerm"
+          placeholder="Search by serial, type, or distributor"
+          icon="i-heroicons-magnifying-glass"
+          class="flex-1"
+        />
+        
+        <USelect
+          v-model="selectedFilter"
+          :options="filterOptions"
+          placeholder="Filter by status"
+          class="min-w-[200px]"
+        />
+      </div>
       <div>
         <UTable v-model:expand="expand" :columns="columns" :rows="rows">
           <template #expand="{ row }">
@@ -36,6 +51,30 @@ const expand = ref({
   openedRows: [],
   row: {},
 });
+const searchTerm = ref('');
+const selectedFilter = ref('all');
+
+const filterOptions = [
+  { value: 'all', label: 'All Drones' },
+];
+
+const filteredDrones = computed(() => {
+  return dronesStore.drones.filter(drone => {
+    const matchesSearch = 
+      drone.barcode1?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      drone.droneType?.type?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      drone.distributor?.name?.toLowerCase().includes(searchTerm.value.toLowerCase());
+
+    const matchesFilter = selectedFilter.value === 'all' || 
+      (selectedFilter.value === 'confirmed' && drone.sellerHasReceived) ||
+      (selectedFilter.value === 'unconfirmed' && !drone.sellerHasReceived) ||
+      (selectedFilter.value === 'sold' && drone.sold);
+
+    return matchesSearch && matchesFilter;
+  });
+});
+
+
 const dronesStore = useDronesStore();
 if (!dronesStore.drones.length) {
   dronesStore.fetchDrones();
@@ -63,7 +102,7 @@ const error = computed(() => {
 // };
 
 const rows = computed(() => {
-  return dronesStore.drones.slice(
+  return filteredDrones.value.slice(
     (page.value - 1) * pageCount,
     page.value * pageCount
   );
@@ -71,7 +110,7 @@ const rows = computed(() => {
 
 const columns = [
   {
-    key: "type",
+    key: "droneType.type",
     label: "Type",
   },
   {
@@ -83,11 +122,11 @@ const columns = [
     label: "Serial Number",
   },
   {
-    key: "registrar.username",
+    key: "createdBy.username",
     label: "Registrar",
   },
   {
-    key: "seller",
+    key: "distributor.name",
     label: "Distributor",
   },
 ];
