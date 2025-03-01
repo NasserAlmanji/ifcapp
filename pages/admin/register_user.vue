@@ -48,7 +48,7 @@
             <option
               v-for="option in distributors"
               :key="option.id"
-              :value="option.name"
+              :value="option.id"
             >
               {{ option.name }}
             </option>

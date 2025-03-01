@@ -43,6 +43,27 @@ export const createDroneType = (type: string) => api.post("/drone-types", { type
 export const getDistributors = () => api.get("/distributors");
 export const createDistributor = (name: string) => api.post("/distributors", { name });
 export const registerDrone = (type: string, items: string[]) => api.post("/drones/register", { type, items });
+export const checkDroneRegistration = (barcode: string) => api.get(`/drones/check?id=${barcode}`);
+export const checkDroneSeller = (barcode: string) => api.get(`/drones/check-seller?id=${barcode}`);
+export const assignDrones = (distributor: string, items: string[]) => api.post("/drones/assign", { distributor, items });
+export const listDrones = () => api.get("/drones/list");
+export const checkDroneConfirmation = (barcode: string) => 
+    api.get(`/seller/drones/check-confirmation?id=${barcode}`);
+  
+  export const validateDroneSale = (barcode: string) => 
+    api.get(`/seller/drones/check-sale?id=${barcode}`);
+  
+  export const confirmDrones = (items: string[]) => 
+    api.post('/seller/drones/confirm', { items });
+  
+  export const listSellerDrones = () => api.get('/seller/drones/list');
+  
+  export const sellDrone = (data: {
+    id: string;
+    idcardnumber: string;
+    idname: string;
+    idexpirydate: string;
+  }) => api.post('/seller/drones/sell', data);
 
 export default {
   login,
@@ -53,5 +74,14 @@ export default {
   getDistributors,
   createDistributor,
   registerUser,
-  registerDrone
+  registerDrone,
+  checkDroneRegistration,
+  checkDroneSeller,
+  assignDrones,
+  listDrones,
+  checkDroneConfirmation,
+  validateDroneSale,
+  confirmDrones,
+  sellDrone,
+  listSellerDrones
 };

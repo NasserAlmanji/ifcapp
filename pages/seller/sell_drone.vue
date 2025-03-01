@@ -19,7 +19,6 @@
       placeholder="Drone type will automatically appear here"
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-
     <input
       v-model="idname"
       type="text"
@@ -54,16 +53,17 @@
 <script setup>
 definePageMeta({ layout: "auth" });
 
-import { format } from "date-fns";
+import { ref, onMounted } from 'vue';
+import { format } from 'date-fns';
+import api from '../../utils/api';
+import { debounce } from 'lodash';
 
 const scannedItem = ref("");
 const droneType = ref("");
 const idcardnumber = ref("");
 const idname = ref("");
 const idexpirydate = ref(new Date());
-
 const inputRef = ref(null);
-let timeout = null;
 
 onMounted(() => {
   inputRef.value?.focus();
@@ -73,47 +73,35 @@ const handleFocus = () => {
   scannedItem.value = "";
 };
 
-const onInputChange = () => {
-  clearTimeout(timeout);
-  timeout = setTimeout(async () => {
-    let item = scannedItem.value.trim();
-    if (item) {
-      // Add item if it's not empty or a duplicate
-      if (item.length > 10) {
-        //alert(item);
-        try {
-          let drone = await $fetch(`/api/seller/check/isValidSale?id=${item}`);
-          droneType.value = drone.type;
-        } catch (error) {
-          alert(error.message);
-        }
-      }
-    }
-  }, 100);
-};
+const onInputChange = debounce(async () => {
+  const barcode = scannedItem.value.trim();
+  if (!barcode || barcode.length <= 10) return;
 
-const removeItem = (index) => {
-  items.value.splice(index, 1);
-  scannedItem.value = "";
-};
-
-async function submit() {
-  const { data, error, pending } = await useFetch("/api/seller/sell_drone", {
-    method: "POST",
-    body: { idcardnumber, idname, idexpirydate, id: scannedItem.value },
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!error.value) {
-    navigateTo("/success"); // Redirect to success page
-  } else {
-    alert(error.value);
+  try {
+    const response = await api.validateDroneSale(barcode);
+    droneType.value = response.data.droneType.type || 'Unknown';
+  } catch (error) {
+    alert(error.response?.data?.message || 'Invalid drone for sale');
   }
-}
-</script>
+}, 300);
 
-<style scoped>
-/* You can add custom styling here, but Tailwind provides the utilities you need */
-</style>
+const submit = async () => {
+  try {
+    if (!scannedItem.value || !idcardnumber.value || !idname.value) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    await api.sellDrone({
+      id: scannedItem.value,
+      idcardnumber: idcardnumber.value,
+      idname: idname.value,
+      idexpirydate: idexpirydate.value.toISOString()
+    });
+    
+    navigateTo('/success');
+  } catch (error) {
+    alert(error.response?.data?.message || 'Sale failed');
+  }
+};
+</script>

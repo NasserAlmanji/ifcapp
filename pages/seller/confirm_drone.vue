@@ -14,24 +14,23 @@
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
 
-    <UButton @click="submit()" color="primary" class="w-full">
-      Confirm ( {{ items.length }} ) drones</UButton
-    >
+    <UButton @click="submit" color="primary" class="w-full">
+      Confirm ( {{ items.length }} ) drones
+    </UButton>
 
-    <!-- Display list of items -->
-    <ul class="space-y-3">
+    <ul class="space-y-3 mt-4">
       <li
         v-for="(item, index) in items"
         :key="index"
-        class="flex justify-between items-center p-3 rounded-lg shadow-md"
+        class="flex justify-between items-center p-3 rounded-lg shadow-md bg-gray-800"
       >
         <span>{{ item }}</span>
-        <button
+        <UButton
           @click="removeItem(index)"
-          class="bg-red-500 text-white py-1 px-3 rounded-lg hover:bg-red-600 transition duration-200"
-        >
-          Remove
-        </button>
+          color="red"
+          variant="solid"
+          icon="i-heroicons-x-mark"
+        />
       </li>
     </ul>
   </div>
@@ -40,66 +39,52 @@
 <script setup>
 definePageMeta({ layout: "auth" });
 
+import { ref, onMounted } from 'vue';
+import api from '../../utils/api';
+import { debounce } from 'lodash';
+
 const scannedItem = ref("");
 const items = ref([]);
-const type = ref("");
 const inputRef = ref(null);
-let timeout = null;
 
 onMounted(() => {
   inputRef.value?.focus();
 });
 
 const handleFocus = () => {
-  scannedItem.value = "";
+  scannedItem.value = '';
 };
 
-const onInputChange = () => {
-  clearTimeout(timeout);
-  timeout = setTimeout(async () => {
-    let item = scannedItem.value.trim();
-    if (item) {
-      if (items.value.includes(item)) {
-        return alert("Barcode already scanned");
-      }
-      // Add item if it's not empty or a duplicate
-      if (item.length > 10) {
-        //alert(item);
-        try {
-          await $fetch(`/api/seller/check/isConfirmed?id=${item}`);
+const onInputChange = debounce(async () => {
+  const barcode = scannedItem.value.trim();
+  if (!barcode || barcode.length <= 10) return;
 
-          items.value.push(item);
-        } catch (error) {
-          alert(error.message);
-        }
-        scannedItem.value = "";
-      }
+  try {
+    await api.checkDroneConfirmation(barcode);
+    if (!items.value.includes(barcode)) {
+      items.value.push(barcode);
     }
-  }, 100);
-};
+    scannedItem.value = '';
+  } catch (error) {
+    alert(error.response?.data?.message || 'Invalid drone confirmation');
+  }
+}, 300);
 
 const removeItem = (index) => {
   items.value.splice(index, 1);
-  scannedItem.value = "";
 };
 
-async function submit() {
-  const { data, error, pending } = await useFetch("/api/seller/confirm_drone", {
-    method: "POST",
-    body: { items: items.value },
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+const submit = async () => {
+  try {
+    if (!items.value.length) {
+      alert('Please scan at least one drone');
+      return;
+    }
 
-  if (!error.value) {
-    navigateTo("/success"); // Redirect to success page
-  } else {
-    alert(error.value);
+    await api.confirmDrones(items.value);
+    navigateTo('/success');
+  } catch (error) {
+    alert(error.response?.data?.message || 'Confirmation failed');
   }
-}
+};
 </script>
-
-<style scoped>
-/* You can add custom styling here, but Tailwind provides the utilities you need */
-</style>

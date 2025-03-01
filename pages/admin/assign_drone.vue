@@ -13,29 +13,28 @@
     />
 
     <USelect
-      v-model="distributor"
-      :options="distributors.map((distributor) => distributor.name)"
+      v-model="selectedDistributor"
+      :options="distributorsOptions"
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
 
-    <UButton @click="submit()" color="primary" class="w-full">
-      Assign ( {{ items.length }} ) drones</UButton
-    >
+    <UButton @click="submit" color="primary" class="w-full">
+      Assign ( {{ items.length }} ) drones
+    </UButton>
 
-    <!-- Display list of items -->
-    <ul class="space-y-3">
+    <ul class="space-y-3 mt-4">
       <li
         v-for="(item, index) in items"
         :key="index"
-        class="flex justify-between items-center p-3 rounded-lg shadow-md"
+        class="flex justify-between items-center p-3 rounded-lg shadow-md bg-gray-800"
       >
         <span>{{ item }}</span>
-        <button
+        <UButton
           @click="removeItem(index)"
-          class="bg-red-500 text-white py-1 px-3 rounded-lg hover:bg-red-600 transition duration-200"
-        >
-          Remove
-        </button>
+          color="red"
+          variant="solid"
+          icon="i-heroicons-x-mark"
+        />
       </li>
     </ul>
   </div>
@@ -44,72 +43,65 @@
 <script setup>
 definePageMeta({ layout: "auth" });
 
-const scannedItem = ref("");
-const items = ref([]);
-const distributor = ref("");
-const inputRef = ref(null);
-let timeout = null;
+import { ref, onMounted } from 'vue';
+import api from '../../utils/api';
+import { debounce } from 'lodash';
 
-onMounted(() => {
-  inputRef.value?.focus();
+const scannedItem = ref('');
+const items = ref([]);
+const selectedDistributor = ref('');
+const inputRef = ref(null);
+const distributors = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await api.getDistributors();
+    distributors.value = response.data;
+    inputRef.value?.focus();
+  } catch (error) {
+    console.error('Failed to fetch distributors:', error);
+  }
+});
+
+const distributorsOptions = computed(() => {
+  return distributors.value.map(d => ({
+    label: d.name,
+    value: d.id
+  }));
 });
 
 const handleFocus = () => {
   scannedItem.value = "";
 };
 
-const onInputChange = () => {
-  clearTimeout(timeout);
-  timeout = setTimeout(async () => {
-    let item = scannedItem.value.trim();
-    if (item) {
-      if (items.value.includes(item)) {
-        return alert("Barcode already scanned");
-      }
-      // Add item if it's not empty or a duplicate
-      if (item.length > 10) {
-        //alert(item);
-        try {
-          await $fetch(`/api/admin/check/isWithSeller?id=${item}`);
+const onInputChange = debounce(async () => {
+  const barcode = scannedItem.value.trim();
+  if (!barcode || barcode.length <= 10) return;
 
-          items.value.push(item);
-        } catch (error) {
-          alert(error.message);
-        }
-        scannedItem.value = "";
-      }
-    }
-  }, 100);
-};
-
-const {
-  data: distributors,
-  status,
-  error: fetchError,
-} = await useFetch("/api/admin/distributor/list");
+  try {
+    await api.checkDroneSeller(barcode);
+    if (!items.value.includes(barcode)) items.value.push(barcode);
+    scannedItem.value = '';
+  } catch (error) {
+    alert(error.response?.data?.message || 'Invalid drone for assignment');
+  }
+}, 300);
 
 const removeItem = (index) => {
   items.value.splice(index, 1);
-  scannedItem.value = "";
 };
 
-async function submit() {
-  const { data, error, pending } = await useFetch("/api/admin/assign_drone", {
-    method: "POST",
-    body: { distributor, items: items.value },
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!error.value) {
-    navigateTo("/success"); // Redirect to success page
-  } else {
-    alert(error.value);
+const submit = async () => {
+  if (!selectedDistributor.value || !items.value.length) {
+    alert('Please select a distributor and scan at least one drone');
+    return;
   }
-}
-</script>
 
-<style scoped>
-/* You can add custom styling here, but Tailwind provides the utilities you need */
-</style>
+  try {
+    await api.assignDrones(selectedDistributor.value, items.value);
+    navigateTo('/success');
+  } catch (error) {
+    alert(error.response?.data?.message || 'Assignment failed');
+  }
+};
+</script>
