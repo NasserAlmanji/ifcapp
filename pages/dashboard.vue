@@ -111,6 +111,26 @@
           <p class="text-gray-400">Associate Customer with Drone</p>
         </NuxtLink>
       </div>
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        v-if="userStore.user?.role.includes('government')"
+      >
+        <NuxtLink
+          to="/government/view_government_drones"
+          class="p-6 bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors relative"
+        >
+          <div class="absolute top-0 left-0 text-4xl font-bold text-white">
+            1
+          </div>
+          <img
+            src="/images/table.png"
+            alt="Distribution"
+            class="w-full h-32 object-cover rounded-md mb-4"
+          />
+          <h2 class="text-xl font-semibold mb-2">See Drones</h2>
+          <p class="text-gray-400">See drones</p>
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
