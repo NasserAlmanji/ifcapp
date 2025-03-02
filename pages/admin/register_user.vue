@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center">
-    <div class="rounded-lg shadow-lg p-3">
+    <div class="rounded-lg shadow-lg p-3 w-full max-w-md">
       <h1 class="text-2xl font-bold text-center mb-8">Add User</h1>
 
       <form @submit.prevent="register">
@@ -120,7 +120,7 @@ const register = async () => {
 
     message.value = "Registration successful!";
     error.value = "";
-    navigateTo("/dashboard");
+    navigateTo("/success");
   } catch (err) {
     error.value = err.response?.data?.message || "Registration failed";
     message.value = "";

@@ -127,6 +127,10 @@ const columns = [
     key: "distributor.name",
     label: "Distributor",
   },
+  {
+    key: "soldByUser.username",
+    label: "soldBy",
+  },
 ];
 
 // You can add any logic or data fetching here if needed
