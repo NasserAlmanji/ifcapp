@@ -37,28 +37,34 @@
 </template>
 
 <script setup>
+import api from '../../utils/api';
+
 definePageMeta({ layout: "auth" });
 
-const formState = ref({
-  name: "",
-});
+const formState = ref({ name: "" });
+const distributors = ref([]);
 
-const {
-  data: distributors,
-  status,
-  error: fetchError,
-} = await useFetch("/api/admin/distributor/list");
+const fetchDistributors = async () => {
+  try {
+    const { data } = await api.getDistributors();
+    distributors.value = data;
+  } catch (error) {
+    console.error(error);
+    alert("Failed to load distributors");
+  }
+};
 
 const submitForm = async () => {
   try {
-    const response = await $fetch("/api/admin/distributor/add", {
-      method: "POST",
-      body: formState.value,
-    });
-    navigateTo("/success"); // Redirect to success page
+    await api.createDistributor(formState.value.name);
+    // formState.value.name = "";
+    // await fetchDistributors();
+    navigateTo("/success");
   } catch (error) {
-    console.log(error);
-    alert(error.message);
+    console.error(error);
+    alert("Failed to add distributor");
   }
 };
+
+onMounted(fetchDistributors);
 </script>

@@ -37,32 +37,35 @@
 </template>
 
 <script setup>
+import api from '../../utils/api';
+
 definePageMeta({ layout: "auth" });
 
-const formState = ref({
-  type: "",
-});
+const formState = ref({ type: "" });
+const types = ref([]);
+const errorMessage = ref("");
 
-const {
-  data: types,
-  status,
-  error: fetchError,
-} = await useFetch("/api/admin/type/list");
-
-// console.log(data.value);
-// console.log(status.value);
-// console.log(fetchError.value);
+const fetchDroneTypes = async () => {
+  try {
+    const response = await api.getDroneTypes();
+    types.value = response.data;
+  } catch (error) {
+    console.error("Error fetching drone types:", error);
+    errorMessage.value = "Failed to fetch drone types. Please log in.";
+  }
+};
 
 const submitForm = async () => {
   try {
-    const response = await $fetch("/api/admin/type/add", {
-      method: "POST",
-      body: formState.value,
-    });
-    navigateTo("/success"); // Redirect to success page
+    await api.createDroneType(formState.value.type);
+    navigateTo("/success");
+    // formState.value.type = "";
+    // await fetchDroneTypes();
   } catch (error) {
-    console.log(error);
-    alert(error.message);
+    console.error("Error creating drone type:", error);
+    errorMessage.value = "Failed to create drone type. Check your authentication.";
   }
 };
+
+onMounted(fetchDroneTypes);
 </script>

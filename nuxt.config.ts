@@ -1,26 +1,19 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-
 import dotenv from "dotenv";
 dotenv.config();
 
 export default defineNuxtConfig({
+  ssr: false,
+  target: "static",
   compatibilityDate: "2024-11-01",
   devtools: { enabled: false },
-  // runtimeConfig: {
-  //   MONGODB_URI: process.env.MONGODB_URI,
-  //   MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
-  //   JWT_SECRET: process.env.JWT_SECRET,
-  // },
+  publicRuntimeConfig: {
+    API_BASE_URL: process.env.API_BASE_URL || "http://localhost:8090/api",
+  },
+
   css: ["~/assets/css/global.css"],
 
   modules: ["@nuxt/ui", "@pinia/nuxt", "pinia-plugin-persistedstate/nuxt"],
-  // devServer: {
-  //   https: {
-  //     key: "./cert.key",
-  //     cert: "./cert.crt",
-  //   },
-  //   host: "0.0.0.0", // This allows external access
-  // },
+
   routeRules: {
     "/": { redirect: "/dashboard" },
   },

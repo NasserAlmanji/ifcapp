@@ -1,23 +1,37 @@
 import { defineStore } from "pinia";
+import api from "../utils/api";
 
 export const useDronesStore = defineStore("dronesStore", {
   state: () => ({
-    drones: [],
+    drones: [] as any[],
     loading: false,
     error: null as Error | null,
   }),
   actions: {
     async fetchDrones() {
-      const { data, status, error } = await useFetch("/api/admin/list_drones");
-      this.drones = (data.value as []) || [];
-      this.loading = status.value === "pending";
-      this.error = error.value;
+      try {
+        this.loading = true;
+        const response = await api.listDrones();
+        this.drones = response.data;
+        this.error = null;
+      } catch (error: any) {
+        this.error = error;
+      } finally {
+        this.loading = false;
+      }
     },
+
     async fetchSellerDrones() {
-      const { data, status, error } = await useFetch("/api/seller/list_drones");
-      this.drones = (data.value as []) || [];
-      this.loading = status.value === "pending";
-      this.error = error.value;
-    },
-  },
+      try {
+        this.loading = true;
+        const response = await api.listSellerDrones();
+        this.drones = response.data;
+        this.error = null;
+      } catch (error: any) {
+        this.error = error;
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 });

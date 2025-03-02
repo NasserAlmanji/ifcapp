@@ -8,10 +8,10 @@ export const useAuthStore = defineStore("auth", {
       organization: String;
       _id: String;
     },
-    token: null as null | string,
-    userAvatar: null, // Add this for avatar support
+    userAvatar: null,
+    token: localStorage.getItem("token") || null
   }),
-  persist: true, // Enables persistence
+  persist: true,
   actions: {
     setUser(user: {
       username: String;
@@ -23,12 +23,12 @@ export const useAuthStore = defineStore("auth", {
     },
     setToken(token: string) {
       this.token = token;
+      localStorage.setItem("token", token);
     },
     logout() {
-      this.user = null;
       this.token = null;
-      const token = useCookie("auth_token"); // Access the cookie
-      token.value = null; // Set the cookie to null (delete it)
+      this.user = null;
+      localStorage.removeItem("token");
     },
   },
 });

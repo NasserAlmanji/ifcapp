@@ -37,6 +37,9 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '../stores/authStore.client';
+import api from '../utils/api';
+
 const authStore = useAuthStore();
 
 const form = ref({
@@ -46,16 +49,17 @@ const form = ref({
 
 const login = async () => {
   try {
-    const response = await $fetch("/api/auth/login", {
-      method: "POST",
-      body: form.value,
+    const response = await api.login({
+      username: form.value.username,
+      password: form.value.password,
     });
-    authStore.setToken(response.token);
-    authStore.setUser(response.user);
+
+    authStore.setToken(response.data.token);
+    authStore.setUser(response.data.user);
 
     navigateTo("/dashboard");
   } catch (error) {
-    console.error("Login failed", error);
+    console.log(error);
   }
 };
 </script>

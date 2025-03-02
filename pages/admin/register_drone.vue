@@ -11,23 +11,14 @@
       placeholder="Before scan, place cursor here"
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-
-    <!-- <input
-      v-model="type"
-      type="text"
-      placeholder="DJI Mavic 3 Pro(DJI RC)"
-      class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    /> -->
-
     <USelect
       v-model="type"
-      :options="types.map((type) => type.type)"
+      :options="types.map((t) => ({ label: t.type, value: t.id }))"
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
-
-    <UButton @click="submit()" color="primary" class="w-full">
-      Register ( {{ items.length }} ) drones</UButton
-    >
+    <UButton @click=submit color="primary" class="w-full">
+      Register ( {{ items.length }} ) drones
+    </UButton>
 
     <!-- Display list of items -->
     <ul class="space-y-3">
@@ -47,98 +38,66 @@
     </ul>
   </div>
 </template>
-
 <script setup>
+import { ref, onMounted } from "vue";
+import { debounce } from "lodash";
+import api from "../../utils/api";
+
 definePageMeta({ layout: "auth" });
 
 const scannedItem = ref("");
 const items = ref([]);
 const type = ref("");
 const inputRef = ref(null);
-let timeout = null;
+const types = ref([]);
+const errorMessage = ref("");
 
-onMounted(() => {
+onMounted(async () => {
   inputRef.value?.focus();
+  try {
+    const response = await api.getDroneTypes();
+    types.value = response.data || [];
+  } catch (error) {
+    console.error("Failed to fetch drone types:", error);
+    types.value = [];
+    errorMessage.value = "Failed to fetch drone types. Please log in.";
+  }
 });
 
 const handleFocus = () => {
   scannedItem.value = "";
 };
 
-const onInputChange = () => {
-  clearTimeout(timeout);
-  timeout = setTimeout(async () => {
-    let item = scannedItem.value.trim();
-    if (item) {
-      if (items.value.includes(item)) {
-        return alert("Barcode already scanned");
-      }
-      // Add item if it's not empty or a duplicate
-      if (item.length > 10) {
-        //alert(item);
-        try {
-          await $fetch(`/api/admin/check/isAlreadyRegistered?id=${item}`);
+const onInputChange = debounce(async () => {
+  let item = scannedItem.value.trim();
+  if (!item || item.length <= 10) return;
+  //if (items.value.includes(item)) return alert("Barcode already scanned");
 
-          items.value.push(item);
-        } catch (error) {
-          alert(error.message);
-        }
-        scannedItem.value = "";
-      }
-    }
-  }, 100);
-};
-
-const {
-  data: types,
-  status,
-  error: fetchError,
-} = await useFetch("/api/admin/type/list");
+  try {
+    items.value.push(item);
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    scannedItem.value = "";
+  }
+}, 300);
 
 const removeItem = (index) => {
   items.value.splice(index, 1);
-  scannedItem.value = "";
 };
 
-// onMounted(() => {
-//   for (var i = 1; i < 1; i++) {
-//     setTimeout(() => {
-//       scannedItem.value = generateRandomString(10);
-//       //alert(scannedItem.value + "" + generateRandomString(10));
-//       onInputChange();
-//     }, 1000 * i * 2);
-//   }
-// });
-
-function generateRandomString(length) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters[randomIndex];
-  }
-  return result;
-}
-
 async function submit() {
-  const { data, error, pending } = await useFetch("/api/admin/register_drone", {
-    method: "POST",
-    body: { type, items: items.value },
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  if (!type.value || items.value.length === 0) {
+    alert("Please select a type and add at least one drone.");
+    return;
+  }
 
-  if (!error.value) {
-    navigateTo("/success"); // Redirect to success page
-  } else {
-    alert(error.value);
+  try {
+    await api.registerDrone(type.value, items.value);
+    navigateTo("/success");
+  } catch (error) {
+    console.error("Error registering drone:", error);
+    errorMessage.value = "Failed to register drones. Please check your data.";
   }
 }
 </script>
-
-<style scoped>
-/* You can add custom styling here, but Tailwind provides the utilities you need */
-</style>
