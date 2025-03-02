@@ -33,6 +33,32 @@
       class="w-full p-3 mb-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
 
+    <div class="mb-4">
+      <div 
+        @click="triggerFileInput"
+        class="flex items-center p-3 border rounded-lg shadow-sm cursor-pointer focus-within:ring-2 focus-within:ring-blue-500"
+        :class="{ 'border-blue-500': idPhotoFile }"
+      >
+        <UButton
+          icon="i-heroicons-photo-20-solid"
+          label="Upload"
+          color="gray"
+          variant="solid"
+          class="mr-2"
+        />
+        <span class="text-gray-500 truncate">
+          {{ idPhotoFile ? idPhotoFile.name : 'Click to upload ID photo' }}
+        </span>
+      </div>
+      <input
+        type="file"
+        ref="fileInput"
+        @change="handleFileSelect"
+        accept="image/*"
+        hidden
+      />
+    </div>
+
     <UPopover :popper="{ placement: 'bottom-start' }">
       <UButton
         icon="i-heroicons-calendar-days-20-solid"
@@ -43,7 +69,6 @@
         <DatePicker v-model="idexpirydate" is-required @close="close" />
       </template>
     </UPopover>
-
     <UButton @click="submit()" color="primary" class="w-full mt-10">
       Sell Drone</UButton
     >
@@ -64,6 +89,8 @@ const idcardnumber = ref("");
 const idname = ref("");
 const idexpirydate = ref(new Date());
 const inputRef = ref(null);
+const fileInput = ref(null);
+const idPhotoFile = ref(null);
 
 onMounted(() => {
   inputRef.value?.focus();
@@ -85,19 +112,32 @@ const onInputChange = debounce(async () => {
   }
 }, 300);
 
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const handleFileSelect = (event) => {
+  const files = event.target.files;
+  if (files && files[0]) {
+    idPhotoFile.value = files[0];
+  }
+};
+
 const submit = async () => {
   try {
-    if (!scannedItem.value || !idcardnumber.value || !idname.value) {
-      alert('Please fill all required fields');
+    if (!scannedItem.value || !idcardnumber.value || !idname.value || !idPhotoFile.value) {
+      alert('Please fill all required fields and upload an ID photo');
       return;
     }
 
-    await api.sellDrone({
-      id: scannedItem.value,
-      idcardnumber: idcardnumber.value,
-      idname: idname.value,
-      idexpirydate: idexpirydate.value.toISOString()
-    });
+    const formData = new FormData();
+    formData.append('id', scannedItem.value);
+    formData.append('idcardnumber', idcardnumber.value);
+    formData.append('idname', idname.value);
+    formData.append('idexpirydate', idexpirydate.value.toISOString());
+    formData.append('idPhoto', idPhotoFile.value);
+
+    await api.sellDrone(formData);
     
     navigateTo('/success');
   } catch (error) {
