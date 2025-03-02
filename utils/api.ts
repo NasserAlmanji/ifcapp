@@ -58,12 +58,12 @@ export const checkDroneConfirmation = (barcode: string) =>
   
   export const listSellerDrones = () => api.get('/seller/drones/list');
   
-  export const sellDrone = (data: {
-    id: string;
-    idcardnumber: string;
-    idname: string;
-    idexpirydate: string;
-  }) => api.post('/seller/drones/sell', data);
+  export const sellDrone = (formData: FormData) => 
+    api.post('/seller/drones/sell', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
 
 export default {
   login,
